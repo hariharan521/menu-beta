@@ -1,0 +1,143 @@
+{
+  "cafeSettings": {
+    "cafeName": "Evolo Cafe",
+    "logoText": "EVOLO",
+    "status": "Open Now",
+    "openingHours": "08:00 AM - 10:00 PM",
+    "phone": "+1 (555) 987-6543",
+    "address": "742 Evergreen Terrace, Luxury District",
+    "themeColor": "#D4AF37"
+  },
+  "categories": [
+    {
+      "id": "coffee",
+      "name": "Coffee"
+    },
+    {
+      "id": "tea",
+      "name": "Tea"
+    },
+    {
+      "id": "desserts",
+      "name": "Desserts"
+    },
+    {
+      "id": "mocktails",
+      "name": "Mocktails"
+    },
+    {
+      "id": "snacks",
+      "name": "Snacks"
+    }
+  ],
+  "items": [
+    {
+      "id": "c1",
+      "categoryId": "coffee",
+      "name": "Evolo 24K Gold Espresso",
+      "description": "Double shot of single-origin Ethiopian beans infused with edible 24k gold flakes. Served in a chilled crystal glass.",
+      "price": 14.50,
+      "badge": "Best Seller"
+    },
+    {
+      "id": "c2",
+      "categoryId": "coffee",
+      "name": "Smoked Oak Oak-Milk Latte",
+      "description": "Slow-dripped espresso with custom-toasted organic oat milk, cold-smoked with real white oak chips.",
+      "price": 9.50,
+      "badge": "Chef Special"
+    },
+    {
+      "id": "c3",
+      "categoryId": "coffee",
+      "name": "Kyoto Cold Drip",
+      "description": "24-hour slow drip extraction through clean volcanic sand filtration. Notes of dark chocolate and stone fruit.",
+      "price": 11.00,
+      "badge": "New"
+    },
+    {
+      "id": "c4",
+      "categoryId": "coffee",
+      "name": "Truffle Crème Cappuccino",
+      "description": "Traditional cappuccino topped with a rich foam containing micro-shaved black winter truffle dust.",
+      "price": 13.00
+    },
+    {
+      "id": "t1",
+      "categoryId": "tea",
+      "name": "Imperial Uji Matcha Ceremony",
+      "description": "Uji ceremonial grade matcha hand-whisked to perfection. Served with organic sweet bean paste.",
+      "price": 12.50,
+      "badge": "Chef Special"
+    },
+    {
+      "id": "t2",
+      "categoryId": "tea",
+      "name": "Silver Needle White Tea",
+      "description": "Delicate, hand-harvested young buds from Fuding. Light honey aroma with a smooth, lingering finish.",
+      "price": 10.00
+    },
+    {
+      "id": "t3",
+      "categoryId": "tea",
+      "name": "Crimson Hibiscus Rose Infusion",
+      "description": "Organic Egyptian hibiscus petals steep-infused with damask rosewater and raw wild clover honey.",
+      "price": 8.50,
+      "badge": "New"
+    },
+    {
+      "id": "d1",
+      "categoryId": "desserts",
+      "name": "Madagascar Vanilla Bean Caviar Soufflé",
+      "description": "Light, warm-rising soufflé filled with aromatic vanilla caviar and warm gold-foil caramel sauce.",
+      "price": 18.00,
+      "badge": "Best Seller"
+    },
+    {
+      "id": "d2",
+      "categoryId": "desserts",
+      "name": "Matcha Pistachio Opera Cake",
+      "description": "Layered sponge cake with premium matcha buttercream, pistachio praline, and dark chocolate ganache.",
+      "price": 16.50
+    },
+    {
+      "id": "d3",
+      "categoryId": "desserts",
+      "name": "Deconstructed Citrus Tart",
+      "description": "Meyer lemon curd, blood orange gel, toasted Italian meringue peaks, served over buttery speculoos soil.",
+      "price": 15.00,
+      "badge": "New"
+    },
+    {
+      "id": "m1",
+      "categoryId": "mocktails",
+      "name": "Sparkling Saffron & Pear",
+      "description": "Clarified pear nectar, premium Iranian saffron syrup, sparkling tonic water, finished with a fresh rosemary sprig.",
+      "price": 12.00,
+      "badge": "Best Seller"
+    },
+    {
+      "id": "m2",
+      "categoryId": "mocktails",
+      "name": "Smoked Rosemary Blackberry Sour",
+      "description": "Muddled wild blackberries, fresh lemon juice, sparkling water, served with a smoking rosemary branch.",
+      "price": 11.50
+    },
+    {
+      "id": "s1",
+      "categoryId": "snacks",
+      "name": "Truffle & Parmesan Pomme Frites",
+      "description": "Hand-cut triple-cooked potatoes tossed in pure white truffle oil and aged Parmigiano-Reggiano flakes.",
+      "price": 14.00,
+      "badge": "Best Seller"
+    },
+    {
+      "id": "s2",
+      "categoryId": "snacks",
+      "name": "Avocado & Gold Foil Crostini",
+      "description": "Artisanal sourdough, whipped hass avocado, cold-pressed olive oil, heirloom micro-greens, and micro gold leaf.",
+      "price": 16.00,
+      "badge": "New"
+    }
+  ]
+}
