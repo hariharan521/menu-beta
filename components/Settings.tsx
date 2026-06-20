@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { MenuData, CafeSettings } from '@/types/menu';
 import { 
   Save, Key, Database, Globe, Sliders, Check, 
-  AlertCircle, RefreshCw 
+  AlertCircle, RefreshCw, Download, Printer, QrCode, ExternalLink
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { QRCodeSVG } from 'qrcode.react';
 
 interface SettingsProps {
   initialData: MenuData;
@@ -25,6 +26,149 @@ export default function Settings({ initialData, onSave, token }: SettingsProps) 
   const [isSavingCafe, setIsSavingCafe] = useState(false);
   const [isSavingPass, setIsSavingPass] = useState(false);
   const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string; section: 'cafe' | 'security' } | null>(null);
+
+  const [qrUrl, setQrUrl] = useState('https://menu-beta-tau.vercel.app');
+  const [qrColor, setQrColor] = useState('#d4af37'); // Gold Accent
+  const qrRef = useRef<SVGSVGElement>(null);
+
+  const handlePrint = () => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    const qrSvgHtml = qrRef.current ? qrRef.current.outerHTML : '';
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Print Menu QR Code - ${data.cafeSettings.cafeName}</title>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+            body {
+              margin: 0;
+              padding: 0;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              min-height: 100vh;
+              font-family: 'Outfit', sans-serif;
+              background-color: #fafafa;
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
+            .standee {
+              width: 320px;
+              padding: 40px 30px;
+              background: #0d0d0d;
+              color: #ffffff;
+              border-radius: 24px;
+              text-align: center;
+              box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+              border: 1px solid rgba(255,255,255,0.05);
+              position: relative;
+              overflow: hidden;
+            }
+            .standee::before {
+              content: '';
+              position: absolute;
+              top: -50%;
+              left: -50%;
+              width: 200%;
+              height: 200%;
+              background: radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 70%);
+              pointer-events: none;
+            }
+            .logo-header {
+              font-size: 10px;
+              font-weight: 800;
+              letter-spacing: 0.25em;
+              color: #d4af37;
+              text-transform: uppercase;
+              margin-bottom: 20px;
+            }
+            .title {
+              font-size: 24px;
+              font-weight: 600;
+              margin: 0 0 10px 0;
+              letter-spacing: -0.02em;
+            }
+            .subtitle {
+              font-size: 12px;
+              color: #a3a3a3;
+              font-weight: 300;
+              margin-bottom: 30px;
+              line-height: 1.5;
+            }
+            .qr-container {
+              background: #ffffff;
+              padding: 20px;
+              border-radius: 18px;
+              display: inline-block;
+              box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+              margin-bottom: 30px;
+            }
+            .qr-container svg {
+              display: block;
+              width: 180px;
+              height: 180px;
+            }
+            .footer-tag {
+              font-size: 11px;
+              color: #d4af37;
+              font-weight: 600;
+              letter-spacing: 0.05em;
+            }
+            .address {
+              font-size: 9px;
+              color: #737373;
+              margin-top: 10px;
+              font-weight: 300;
+            }
+            @media print {
+              body {
+                background: none;
+              }
+              .standee {
+                box-shadow: none;
+                border: none;
+                page-break-inside: avoid;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="standee">
+            <div class="logo-header">${data.cafeSettings.logoText || 'EVOLO'}</div>
+            <h1 class="title">Digital Menu</h1>
+            <p class="subtitle">Scan the QR code to browse our menu and place order directly from your phone.</p>
+            <div class="qr-container">
+              ${qrSvgHtml}
+            </div>
+            <div class="footer-tag">${data.cafeSettings.cafeName}</div>
+            ${data.cafeSettings.address ? `<div class="address">${data.cafeSettings.address}</div>` : ''}
+          </div>
+          <script>
+            window.onload = function() {
+              window.print();
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
+
+  const handleDownloadSVG = () => {
+    if (!qrRef.current) return;
+    const svgData = qrRef.current.outerHTML;
+    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+    const svgUrl = URL.createObjectURL(svgBlob);
+    const downloadLink = document.createElement('a');
+    downloadLink.href = svgUrl;
+    downloadLink.download = `${data.cafeSettings.cafeName.toLowerCase().replace(/\s+/g, '-')}-qr.svg`;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  };
 
   const showStatus = (type: 'success' | 'error', message: string, section: 'cafe' | 'security') => {
     setStatus({ type, message, section });
@@ -370,22 +514,102 @@ export default function Settings({ initialData, onSave, token }: SettingsProps) 
             </div>
           </div>
 
-          <div className="glass-card rounded-[24px] p-6 space-y-4 text-center">
-            <span className="text-[10px] tracking-widest uppercase font-semibold text-white flex items-center justify-center gap-1.5">
-              <Globe className="w-3.5 h-3.5 text-accent-gold" />
-              QR Code Portal
-            </span>
-            <p className="text-secondary-text text-[10px] font-light leading-relaxed">
-              Scan this mockup in development to load the local client menu interface instantly.
-            </p>
-            {/* Simple CSS simulated QR block */}
-            <div className="w-32 h-32 bg-white rounded-xl mx-auto flex items-center justify-center p-3 border-4 border-white/10 shadow-lg">
-              <div className="w-full h-full bg-bg-dark rounded flex flex-col items-center justify-center relative">
-                <div className="w-5 h-5 border border-white absolute top-2 left-2" />
-                <div className="w-5 h-5 border border-white absolute top-2 right-2" />
-                <div className="w-5 h-5 border border-white absolute bottom-2 left-2" />
-                <span className="text-[8px] text-accent-gold font-bold font-mono tracking-tighter uppercase">EVOLO QR</span>
+          <div className="glass-card rounded-[24px] p-6 space-y-6">
+            <div className="border-b border-white/5 pb-4 text-center">
+              <span className="text-[10px] tracking-widest uppercase font-semibold text-white flex items-center justify-center gap-1.5">
+                <QrCode className="w-3.5 h-3.5 text-accent-gold" />
+                QR Code Portal
+              </span>
+              <p className="text-secondary-text text-[9px] font-light mt-1">
+                Generate, style, and print high-quality QR codes for your cafe tables.
+              </p>
+            </div>
+
+            {/* Premium QR Code Preview */}
+            <div className="relative group">
+              <div className="w-40 h-40 bg-white rounded-2xl mx-auto flex items-center justify-center p-4 border border-white/10 shadow-xl transition-all duration-300 group-hover:scale-105">
+                <QRCodeSVG
+                  ref={qrRef}
+                  value={qrUrl}
+                  size={144}
+                  bgColor="#ffffff"
+                  fgColor={qrColor === '#ffffff' ? '#000000' : qrColor}
+                  level="H"
+                  includeMargin={false}
+                />
               </div>
+              <div className="absolute top-2 right-2 bg-accent-gold/10 text-accent-gold border border-accent-gold/20 text-[8px] px-1.5 py-0.5 rounded font-mono font-semibold uppercase tracking-wider">
+                Active QR
+              </div>
+            </div>
+
+            {/* QR URL Input */}
+            <div className="space-y-1.5 text-left">
+              <label className="text-[9px] tracking-wider text-secondary-text uppercase flex items-center gap-1">
+                Target URL
+                <a href={qrUrl} target="_blank" rel="noopener noreferrer" className="text-accent-gold hover:underline flex items-center">
+                  <ExternalLink className="w-2.5 h-2.5 ml-0.5" />
+                </a>
+              </label>
+              <input
+                type="url"
+                value={qrUrl}
+                onChange={(e) => setQrUrl(e.target.value)}
+                placeholder="https://menu-beta-tau.vercel.app"
+                className="w-full bg-[#090909] border border-white/10 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-accent-gold/30"
+              />
+            </div>
+
+            {/* Customization Options */}
+            <div className="grid grid-cols-2 gap-2 text-left">
+              <div className="space-y-1.5">
+                <label className="text-[9px] tracking-wider text-secondary-text uppercase">QR Accent Color</label>
+                <div className="flex gap-2">
+                  <input
+                    type="color"
+                    value={qrColor}
+                    onChange={(e) => setQrColor(e.target.value)}
+                    className="w-8 h-8 rounded border border-white/10 cursor-pointer bg-transparent"
+                  />
+                  <input
+                    type="text"
+                    value={qrColor}
+                    onChange={(e) => setQrColor(e.target.value)}
+                    className="w-full bg-[#090909] border border-white/10 rounded-lg px-2 text-[10px] text-white focus:outline-none font-mono"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5 flex flex-col justify-end">
+                <button
+                  type="button"
+                  onClick={() => setQrColor(data.cafeSettings.themeColor || '#d4af37')}
+                  className="w-full bg-white/5 hover:bg-white/10 text-white text-[9px] font-semibold uppercase tracking-wider py-2.5 px-3 rounded-lg border border-white/5 transition-all duration-300 cursor-pointer"
+                >
+                  Use Theme Color
+                </button>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="grid grid-cols-2 gap-3 pt-2">
+              <button
+                type="button"
+                onClick={handleDownloadSVG}
+                className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full text-[10px] font-bold tracking-wider bg-white/5 text-white hover:bg-white/10 border border-white/10 transition-all duration-300 cursor-pointer"
+              >
+                <Download className="w-3 h-3 text-accent-gold" />
+                Download SVG
+              </button>
+
+              <button
+                type="button"
+                onClick={handlePrint}
+                className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full text-[10px] font-bold tracking-wider bg-accent-gold text-bg-dark hover:bg-accent-gold/90 transition-all duration-300 cursor-pointer"
+              >
+                <Printer className="w-3 h-3" />
+                Print Stand
+              </button>
             </div>
           </div>
         </div>
