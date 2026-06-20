@@ -176,6 +176,7 @@ function MenuContent() {
                   width={220}
                   height={260}
                   className="object-contain"
+                  style={{ height: 'auto' }}
                   priority
                 />
               </div>
@@ -200,6 +201,7 @@ function MenuContent() {
                   width={200}
                   height={220}
                   className="object-contain animate-pulse-subtle"
+                  style={{ height: 'auto' }}
                   priority
                 />
               </div>
